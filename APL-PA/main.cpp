@@ -464,7 +464,6 @@ void compareHero(){
     if(hero[b].detail.patch == "Buff") powerB += 5;
     if(hero[a].detail.patch == "Nerf") powerA -= 5;
     if(hero[b].detail.patch == "Nerf") powerB -= 5;
-    system("cls");
     cout << "=============================\n";
     cout << "|           HASIL           |\n";
     cout << "=============================\n";
@@ -550,23 +549,6 @@ void updateRealtimeFavorit(){
     }
 }
 
-void datafavorit() {
-    cout << "====================================\n";
-        cout << "|            HERO FAVORIT          |\n";
-        cout << "====================================\n";
-        for(int i = 0; i < jumlahFavorit; i++){
-            cout << i + 1 << ". "
-                 << favorit[i].nama
-                 << " | "
-                 << favorit[i].role
-                 << " | Match : "
-                 << favorit[i].match
-                 << " | WR : "
-                 << favorit[i].winrate
-                 << "%\n";
-        }
-}
-
 void lihatFavorit(){
     atomic<bool> keluar(false);
     thread inputThread([&](){
@@ -581,7 +563,20 @@ void lihatFavorit(){
 
     while(!keluar){
         system("cls");
-        datafavorit();
+        cout << "====================================\n";
+        cout << "|            HERO FAVORIT          |\n";
+        cout << "====================================\n";
+        for(int i = 0; i < jumlahFavorit; i++){
+            cout << i + 1 << ". "
+                 << favorit[i].nama
+                 << " | "
+                 << favorit[i].role
+                 << " | Match : "
+                 << favorit[i].match
+                 << " | WR : "
+                 << favorit[i].winrate
+                 << "%\n";
+        }
         cout << "\nKetik e lalu Enter untuk kembali ke Menu User.\n";
         cout << "Update setiap 10 detik...\n";
         for(int t = 0; t < 100 && !keluar; t++){
@@ -596,7 +591,6 @@ void lihatFavorit(){
 
 void hapusFavorit(){
     int no;
-    datafavorit();
     cout << "Pilih favorit yang dihapus : ";
     cin >> no;
     for(int i = no - 1; i < jumlahFavorit - 1; i++){
@@ -715,48 +709,6 @@ void menuRead(){
     }while(pilih != 5);
 }
 
-void menuFav() {
-    int pilih;
-    do {
-        system("cls");
-        cout << "=============================================\n";
-        cout << "|              MENU FAVORIT                 |\n";
-        cout << "=============================================\n";
-        cout << "|1. Buat Hero Favorit                       |\n";
-        cout << "|2. Lihat Hero Favorit                      |\n";
-        cout << "|3. Hapus Hero Favorit                      |\n";
-        cout << "|4. Kembali                                 |\n";
-        cout << "=============================================\n";
-        cout << "Pilih : ";
-        cin >> pilih;
-        clearBuffer();
-        switch(pilih){
-            case 1:
-                system("cls");
-                tambahFavorit();
-                pause();
-                break;
-            case 2:
-                system("cls"); 
-                lihatFavorit();
-                break;
-            case 3:
-                system("cls");
-                hapusFavorit();
-                pause();
-                break;
-            case 4:
-                system("cls");  
-                pesan("favorit", "Kembali ke Menu User");
-                pause();
-                break;
-            default:
-                cout << "Pilihan tidak valid!\n";
-                pause();
-        }
-    } while(pilih != 4);
-}
-
 void menuAdmin(){
     int pilih;
     do{
@@ -807,47 +759,45 @@ void menuUser(){
         cout << "|2. Hero Meta                               |\n";
         cout << "|3. Cari Berdasarkan Role                   |\n";
         cout << "|4. Compare Hero                            |\n";
-        cout << "|5. Hero Favorit                            |\n";
-        cout << "|6. Keluar                                  |\n";
+        cout << "|5. Tambah Hero Favorit                     |\n";
+        cout << "|6. Lihat Hero Favorit                      |\n";
+        cout << "|7. Hapus Hero Favorit                      |\n";
+        cout << "|8. Keluar                                  |\n";
         cout << "=============================================\n";
         cout << "Pilih : ";
         cin >> pilih;
         clearBuffer();
         switch(pilih){
             case 1:
-                system("cls");
                 lihatHero();
                 pause();
                 break;
             case 2:
-                system("cls");
                 heroMeta();
                 pause();
                 break;
             case 3:
-                system("cls");
                 cariRole();
                 pause();
                 break;
             case 4:
-                system("cls");
                 compareHero();
                 pause();
                 break;
             case 5:
-                system("cls");
-                menuFav();
+                tambahFavorit();
                 pause();
                 break;
             case 6:
-                system("cls");
-                pesan("user");
+                lihatFavorit();
+                break;
+            case 7:
+                hapusFavorit();
                 pause();
                 break;
         }
-    }while(pilih != 6);
+    }while(pilih != 8);
 }
-
 
 struct User{
     string username;
@@ -946,6 +896,4 @@ int main(){
     } while(pilih != 4);
 
     return 0;
-}  
-
-//testtt
+}
