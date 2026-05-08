@@ -854,53 +854,176 @@ struct User{
     string password;
 };
 User userList[MAX];
-int jumlahUser = 0;
-void registrasiUser(){
-    User baru;
-    cout << "=== REGISTRASI USER ===\n";
-    cout << "Username : ";
-    cin >> baru.username;
-    cout << "Password : ";
-    cin >> baru.password;
 
-    for(int i = 0; i < jumlahUser; i++){
-        if(userList[i].username == baru.username){
-            cout << "Username sudah digunakan!\n";
-            return;
+int jumlahUser = 0;
+bool validUsername(string username){
+    if(username.length() > 20 || username.empty()){
+        return false;
+    }
+
+    for(int i = 0; i < username.length(); i++){
+        if(!isalpha(username[i])){
+            return false;
         }
     }
-    userList[jumlahUser++] = baru;
-    cout << "Registrasi berhasil!\n";
+
+    return true;
+}
+
+bool validPassword(string password){
+    if(password.length() > 10 || password.empty()){
+        return false;
+    }
+
+    for(int i = 0; i < password.length(); i++){
+        if(!isdigit(password[i])){
+            return false;
+        }
+    }
+
+    return true;
+}
+
+void registrasiUser(){
+    User baru;
+    int percobaan = 0;
+
+   
+
+    while(percobaan < 3){
+        system("cls");
+
+        cout << "====================================\n";
+        cout << "|         REGISTRASI USER         |\n";
+        cout << "====================================\n";
+
+        cout << "Username : ";
+        getline(cin, baru.username);
+
+        if(baru.username.empty()){
+            cout << "\nUsername tidak boleh kosong!\n";
+            percobaan++;
+            pause();
+            continue;
+        }
+
+        if(!validUsername(baru.username)){
+            cout << "\nUsername hanya boleh huruf!\n";
+            cout << "Maksimal 20 karakter!\n";
+            percobaan++;
+            pause();
+            continue;
+        }
+
+        bool sudahAda = false;
+
+        for(int i = 0; i < jumlahUser; i++){
+            if(userList[i].username == baru.username){
+                sudahAda = true;
+                break;
+            }
+        }
+
+        if(sudahAda){
+            cout << "\nUsername sudah digunakan!\n";
+            percobaan++;
+            pause();
+            continue;
+        }
+
+        cout << "Password : ";
+        getline(cin, baru.password);
+
+        if(baru.password.empty()){
+            cout << "\nPassword tidak boleh kosong!\n";
+            percobaan++;
+            pause();
+            continue;
+        }
+
+        if(!validPassword(baru.password)){
+            cout << "\nPassword hanya boleh angka!\n";
+            cout << "Maksimal 10 digit!\n";
+            percobaan++;
+            pause();
+            continue;
+        }
+
+        userList[jumlahUser] = baru;
+        jumlahUser++;
+
+        cout << "\nRegistrasi berhasil!\n";
+        return;
+    }
+
+    cout << "\nRegistrasi gagal 3 kali!\n";
+    return;
 }
 
 bool loginUser(){
     string username, password;
     int kesempatan = 0;
+
     while(kesempatan < 3){
-        cout << "=== LOGIN USER ===\n";
+        system("cls");
+
+        cout << "====================================\n";
+        cout << "|            LOGIN USER           |\n";
+        cout << "====================================\n";
+
         cout << "Username : ";
-        cin >> username;
+        getline(cin, username);
+
+        if(username.empty()){
+            cout << "\nUsername tidak boleh kosong!\n";
+            kesempatan++;
+            pause();
+            continue;
+        }
+
         cout << "Password : ";
-        cin >> password;
+        getline(cin, password);
+
+        if(password.empty()){
+            cout << "\nPassword tidak boleh kosong!\n";
+            kesempatan++;
+            pause();
+            continue;
+        }
+
+        bool berhasil = false;
 
         for(int i = 0; i < jumlahUser; i++){
             if(userList[i].username == username &&
                userList[i].password == password){
-                cout << "Login berhasil!\n";
-                return true;
+
+                berhasil = true;
+                break;
             }
         }
-        kesempatan++;
-        cout << "Username atau Password salah! ("
-             << kesempatan << "/3)\n";
-        pause();
-        system("cls");
+
+        if(berhasil){
+            cout << "\nLogin berhasil!\n";
+            pause();
+            return true;
+        }
+        else{
+            kesempatan++;
+
+            cout << "\nUsername atau Password salah!\n";
+            cout << "Percobaan ke-"
+                 << kesempatan
+                 << " dari 3\n";
+
+            pause();
+        }
     }
-    cout << "Gagal login 3 kali!\n";
+
+    cout << "\nLogin gagal 3 kali!\n";
     pause();
+
     return false;
 }
-
 int main(){
     srand(time(0));
     Login admin = {"admin","01123"};
@@ -947,5 +1070,3 @@ int main(){
 
     return 0;
 }  
-
-//testtt
