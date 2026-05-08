@@ -464,7 +464,6 @@ void compareHero(){
     if(hero[b].detail.patch == "Buff") powerB += 5;
     if(hero[a].detail.patch == "Nerf") powerA -= 5;
     if(hero[b].detail.patch == "Nerf") powerB -= 5;
-    system("cls");
     cout << "=============================\n";
     cout << "|           HASIL           |\n";
     cout << "=============================\n";
@@ -550,23 +549,6 @@ void updateRealtimeFavorit(){
     }
 }
 
-void datafavorit() {
-    cout << "====================================\n";
-        cout << "|            HERO FAVORIT          |\n";
-        cout << "====================================\n";
-        for(int i = 0; i < jumlahFavorit; i++){
-            cout << i + 1 << ". "
-                 << favorit[i].nama
-                 << " | "
-                 << favorit[i].role
-                 << " | Match : "
-                 << favorit[i].match
-                 << " | WR : "
-                 << favorit[i].winrate
-                 << "%\n";
-        }
-}
-
 void lihatFavorit(){
     atomic<bool> keluar(false);
     thread inputThread([&](){
@@ -581,7 +563,20 @@ void lihatFavorit(){
 
     while(!keluar){
         system("cls");
-        datafavorit();
+        cout << "====================================\n";
+        cout << "|            HERO FAVORIT          |\n";
+        cout << "====================================\n";
+        for(int i = 0; i < jumlahFavorit; i++){
+            cout << i + 1 << ". "
+                 << favorit[i].nama
+                 << " | "
+                 << favorit[i].role
+                 << " | Match : "
+                 << favorit[i].match
+                 << " | WR : "
+                 << favorit[i].winrate
+                 << "%\n";
+        }
         cout << "\nKetik e lalu Enter untuk kembali ke Menu User.\n";
         cout << "Update setiap 10 detik...\n";
         for(int t = 0; t < 100 && !keluar; t++){
@@ -596,7 +591,6 @@ void lihatFavorit(){
 
 void hapusFavorit(){
     int no;
-    datafavorit();
     cout << "Pilih favorit yang dihapus : ";
     cin >> no;
     for(int i = no - 1; i < jumlahFavorit - 1; i++){
@@ -715,48 +709,6 @@ void menuRead(){
     }while(pilih != 5);
 }
 
-void menuFav() {
-    int pilih;
-    do {
-        system("cls");
-        cout << "=============================================\n";
-        cout << "|              MENU FAVORIT                 |\n";
-        cout << "=============================================\n";
-        cout << "|1. Buat Hero Favorit                       |\n";
-        cout << "|2. Lihat Hero Favorit                      |\n";
-        cout << "|3. Hapus Hero Favorit                      |\n";
-        cout << "|4. Kembali                                 |\n";
-        cout << "=============================================\n";
-        cout << "Pilih : ";
-        cin >> pilih;
-        clearBuffer();
-        switch(pilih){
-            case 1:
-                system("cls");
-                tambahFavorit();
-                pause();
-                break;
-            case 2:
-                system("cls"); 
-                lihatFavorit();
-                break;
-            case 3:
-                system("cls");
-                hapusFavorit();
-                pause();
-                break;
-            case 4:
-                system("cls");  
-                pesan("favorit", "Kembali ke Menu User");
-                pause();
-                break;
-            default:
-                cout << "Pilihan tidak valid!\n";
-                pause();
-        }
-    } while(pilih != 4);
-}
-
 void menuAdmin(){
     int pilih;
     do{
@@ -807,223 +759,98 @@ void menuUser(){
         cout << "|2. Hero Meta                               |\n";
         cout << "|3. Cari Berdasarkan Role                   |\n";
         cout << "|4. Compare Hero                            |\n";
-        cout << "|5. Hero Favorit                            |\n";
-        cout << "|6. Keluar                                  |\n";
+        cout << "|5. Tambah Hero Favorit                     |\n";
+        cout << "|6. Lihat Hero Favorit                      |\n";
+        cout << "|7. Hapus Hero Favorit                      |\n";
+        cout << "|8. Keluar                                  |\n";
         cout << "=============================================\n";
         cout << "Pilih : ";
         cin >> pilih;
         clearBuffer();
         switch(pilih){
             case 1:
-                system("cls");
                 lihatHero();
                 pause();
                 break;
             case 2:
-                system("cls");
                 heroMeta();
                 pause();
                 break;
             case 3:
-                system("cls");
                 cariRole();
                 pause();
                 break;
             case 4:
-                system("cls");
                 compareHero();
                 pause();
                 break;
             case 5:
-                system("cls");
-                menuFav();
+                tambahFavorit();
                 pause();
                 break;
             case 6:
-                system("cls");
-                pesan("user");
+                lihatFavorit();
+                break;
+            case 7:
+                hapusFavorit();
                 pause();
                 break;
         }
-    }while(pilih != 6);
+    }while(pilih != 8);
 }
-
 
 struct User{
     string username;
     string password;
 };
 User userList[MAX];
-
 int jumlahUser = 0;
-bool validUsername(string username){
-    if(username.length() > 20 || username.empty()){
-        return false;
-    }
-
-    for(int i = 0; i < username.length(); i++){
-        if(!isalpha(username[i])){
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool validPassword(string password){
-    if(password.length() > 10 || password.empty()){
-        return false;
-    }
-
-    for(int i = 0; i < password.length(); i++){
-        if(!isdigit(password[i])){
-            return false;
-        }
-    }
-
-    return true;
-}
-
 void registrasiUser(){
     User baru;
-    int percobaan = 0;
+    cout << "=== REGISTRASI USER ===\n";
+    cout << "Username : ";
+    cin >> baru.username;
+    cout << "Password : ";
+    cin >> baru.password;
 
-   
-
-    while(percobaan < 3){
-        system("cls");
-
-        cout << "====================================\n";
-        cout << "|         REGISTRASI USER         |\n";
-        cout << "====================================\n";
-
-        cout << "Username : ";
-        getline(cin, baru.username);
-
-        if(baru.username.empty()){
-            cout << "\nUsername tidak boleh kosong!\n";
-            percobaan++;
-            pause();
-            continue;
+    for(int i = 0; i < jumlahUser; i++){
+        if(userList[i].username == baru.username){
+            cout << "Username sudah digunakan!\n";
+            return;
         }
-
-        if(!validUsername(baru.username)){
-            cout << "\nUsername hanya boleh huruf!\n";
-            cout << "Maksimal 20 karakter!\n";
-            percobaan++;
-            pause();
-            continue;
-        }
-
-        bool sudahAda = false;
-
-        for(int i = 0; i < jumlahUser; i++){
-            if(userList[i].username == baru.username){
-                sudahAda = true;
-                break;
-            }
-        }
-
-        if(sudahAda){
-            cout << "\nUsername sudah digunakan!\n";
-            percobaan++;
-            pause();
-            continue;
-        }
-
-        cout << "Password : ";
-        getline(cin, baru.password);
-
-        if(baru.password.empty()){
-            cout << "\nPassword tidak boleh kosong!\n";
-            percobaan++;
-            pause();
-            continue;
-        }
-
-        if(!validPassword(baru.password)){
-            cout << "\nPassword hanya boleh angka!\n";
-            cout << "Maksimal 10 digit!\n";
-            percobaan++;
-            pause();
-            continue;
-        }
-
-        userList[jumlahUser] = baru;
-        jumlahUser++;
-
-        cout << "\nRegistrasi berhasil!\n";
-        return;
     }
-
-    cout << "\nRegistrasi gagal 3 kali!\n";
-    return;
+    userList[jumlahUser++] = baru;
+    cout << "Registrasi berhasil!\n";
 }
 
 bool loginUser(){
     string username, password;
     int kesempatan = 0;
-
     while(kesempatan < 3){
-        system("cls");
-
-        cout << "====================================\n";
-        cout << "|            LOGIN USER           |\n";
-        cout << "====================================\n";
-
+        cout << "=== LOGIN USER ===\n";
         cout << "Username : ";
-        getline(cin, username);
-
-        if(username.empty()){
-            cout << "\nUsername tidak boleh kosong!\n";
-            kesempatan++;
-            pause();
-            continue;
-        }
-
+        cin >> username;
         cout << "Password : ";
-        getline(cin, password);
-
-        if(password.empty()){
-            cout << "\nPassword tidak boleh kosong!\n";
-            kesempatan++;
-            pause();
-            continue;
-        }
-
-        bool berhasil = false;
+        cin >> password;
 
         for(int i = 0; i < jumlahUser; i++){
             if(userList[i].username == username &&
                userList[i].password == password){
-
-                berhasil = true;
-                break;
+                cout << "Login berhasil!\n";
+                return true;
             }
         }
-
-        if(berhasil){
-            cout << "\nLogin berhasil!\n";
-            pause();
-            return true;
-        }
-        else{
-            kesempatan++;
-
-            cout << "\nUsername atau Password salah!\n";
-            cout << "Percobaan ke-"
-                 << kesempatan
-                 << " dari 3\n";
-
-            pause();
-        }
+        kesempatan++;
+        cout << "Username atau Password salah! ("
+             << kesempatan << "/3)\n";
+        pause();
+        system("cls");
     }
-
-    cout << "\nLogin gagal 3 kali!\n";
+    cout << "Gagal login 3 kali!\n";
     pause();
-
     return false;
 }
+
 int main(){
     srand(time(0));
     Login admin = {"admin","01123"};
@@ -1069,4 +896,4 @@ int main(){
     } while(pilih != 4);
 
     return 0;
-}  
+}
