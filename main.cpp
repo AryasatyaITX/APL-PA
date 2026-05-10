@@ -184,8 +184,14 @@ void updateHero(Hero *heroArr, int jml){
     cout << "\nMasukkan ID Hero : ";
     cin >> id;
     clearBuffer();
-    int index = id - 1;
-    if(index < 0 || index >= jml){
+    int index = -1;
+    for(int i = 0; i < jml; i++){
+        if(heroArr[i].id == id){
+            index = i;
+            break;
+        }
+    }
+    if(index == -1){
         cout << "ID tidak ditemukan!\n";
         return;
     }
@@ -241,11 +247,18 @@ int hapusHero(Hero heroArr[], int *jml){
     cout << "\nMasukkan ID Hero : ";
     cin >> id;
     clearBuffer();
-    int index = id - 1;
-    if(index < 0 || index >= *jml){
-        cout << "ID tidak ditemukan!\n";
-        return 0;
+    int index = -1;
+
+    for(int i = 0; i < *jml; i++){
+        if(heroArr[i].id == id){
+            index = i;
+            break;
+        }
     }
+    if(index == -1){
+            cout << "ID tidak ditemukan!\n";
+            return 0;
+        }
     for(int i = index; i < *jml - 1; i++){
         heroArr[i] = heroArr[i + 1];
         heroArr[i].id = i + 1;
