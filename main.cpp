@@ -68,7 +68,7 @@ Map mapGame[MAX] = {
     {2,"Flying Clouds"}
 };
 
-// Overloading
+// Overloading pesan
 string pesan(string nama) {
     string msg = " Anda Keluar Dari Menu : " + nama;
     cout << msg << endl;
@@ -83,10 +83,10 @@ string pesan(string nama, string status) {
 
 Favorit favorit[MAX];
 
-int jumlahHero = 4;
-int jumlahSpell = 2;
+int jumlahHero   = 4;
+int jumlahSpell  = 2;
 int jumlahEmblem = 2;
-int jumlahMap = 2;
+int jumlahMap    = 2;
 int jumlahFavorit = 0;
 
 void clearBuffer(){
@@ -100,15 +100,14 @@ void pause(){
 
 void headerHero(){
     cout << "\n========================================================================================================\n";
-    cout << "|" << setw(3) << "ID"
+    cout << "|" << setw(3)  << "ID"
          << "|" << setw(20) << "Hero"
          << "|" << setw(15) << "Role"
          << "|" << setw(15) << "Kesulitan"
-         << "|" << setw(8) << "Level"
+         << "|" << setw(8)  << "Level"
          << "|" << setw(12) << "Patch"
          << "|" << setw(10) << "Meta"
          << " |\n";
-
     cout << "========================================================================================================\n";
 }
 
@@ -130,65 +129,67 @@ bool loginAdmin(Login admin){
     return false;
 }
 
-void lihatHero(){
-    if(jumlahHero == 0){
+void lihatHero(Hero *heroArr, int jml){
+    if(jml == 0){
         cout << "Belum ada data hero\n";
         return;
     }
-
     headerHero();
-
-    for(int i = 0; i < jumlahHero; i++){
+    for(int i = 0; i < jml; i++){
         cout << "|"
-             << setw(3) << hero[i].id
-             << "|" << setw(20) << hero[i].nama
-             << "|" << setw(15) << hero[i].detail.role
-             << "|" << setw(15) << hero[i].detail.kesulitan
-             << "|" << setw(8) << hero[i].detail.level
-             << "|" << setw(12) << hero[i].detail.patch
-             << "|" << setw(10) << (hero[i].meta ? "Yes" : "No")
+             << setw(3)  << heroArr[i].id
+             << "|" << setw(20) << heroArr[i].nama
+             << "|" << setw(15) << heroArr[i].detail.role
+             << "|" << setw(15) << heroArr[i].detail.kesulitan
+             << "|" << setw(8)  << heroArr[i].detail.level
+             << "|" << setw(12) << heroArr[i].detail.patch
+             << "|" << setw(10) << (heroArr[i].meta ? "Yes" : "No")
              << " |\n";
     }
-
     cout << "========================================================================================================\n";
 }
 
-void tambahHero(){
-    Hero baru;
-    baru.id = jumlahHero + 1;
+int tambahHero(Hero heroArr[], int *jml){
+    if(*jml >= MAX){
+        cout << "Data hero penuh!\n";
+        return 0;
+    }
+    Hero heroBaru;
+    Hero *ptr = &heroBaru;
+    ptr->id = *jml + 1;
     cout << "Nama Hero        : ";
-    getline(cin, baru.nama);
+    getline(cin, ptr->nama);
     cout << "Role Hero        : ";
-    getline(cin, baru.detail.role);
+    getline(cin, ptr->detail.role);
     cout << "Kesulitan Hero   : ";
-    getline(cin, baru.detail.kesulitan);
+    getline(cin, ptr->detail.kesulitan);
     cout << "Level Hero (1-15): ";
-    cin >> baru.detail.level;
-    if(cin.fail()){
-        clearBuffer();
-        throw invalid_argument("Level harus angka!");
-    }
-    if(baru.detail.level < 1 || baru.detail.level > 15){
-        throw out_of_range("Level harus 1-15!");
-    }
+    cin >> ptr->detail.level;
     clearBuffer();
-    baru.detail.patch = "Normal";
-    baru.meta = false;
-    hero[jumlahHero] = baru;
-    jumlahHero++;
+    ptr->detail.patch = "Normal";
+    ptr->meta = false;
+    heroArr[*jml] = heroBaru;
+    (*jml)++;
     cout << "\nHero berhasil ditambahkan!\n";
+    return 1;
 }
 
-void updateHero(){
-    lihatHero();
+void updateHero(Hero *heroArr, int jml){
+    if(jml == 0){
+        cout << "Belum ada data hero.\n";
+        return;
+    }
+    lihatHero(heroArr, jml);
     int id;
     cout << "\nMasukkan ID Hero : ";
     cin >> id;
     clearBuffer();
     int index = id - 1;
-    if(index < 0 || index >= jumlahHero){
-        throw out_of_range("ID tidak ditemukan!");
+    if(index < 0 || index >= jml){
+        cout << "ID tidak ditemukan!\n";
+        return;
     }
+    Hero *target = &heroArr[index];
     cout << "\n1. Nama\n";
     cout << "2. Role\n";
     cout << "3. Kesulitan\n";
@@ -201,47 +202,57 @@ void updateHero(){
     switch(pilih){
         case 1:
             cout << "Nama baru : ";
-            getline(cin, hero[index].nama);
+            getline(cin, target->nama);
             break;
         case 2:
             cout << "Role baru : ";
-            getline(cin, hero[index].detail.role);
+            getline(cin, target->detail.role);
             break;
         case 3:
             cout << "Kesulitan baru : ";
-            getline(cin, hero[index].detail.kesulitan);
+            getline(cin, target->detail.kesulitan);
             break;
         case 4:
             cout << "Level baru : ";
-            cin >> hero[index].detail.level;
+            cin >> target->detail.level;
+            clearBuffer();
             break;
         case 5:
             cout << "Patch baru : ";
-            getline(cin, hero[index].detail.patch);
-
-            if(hero[index].detail.patch == "Buff"){
-                hero[index].meta = true;
-            }
-            else{
-                hero[index].meta = false;
-            }
+            getline(cin, target->detail.patch);
+            if(target->detail.patch == "Buff")
+                target->meta = true;
+            else
+                target->meta = false;
             break;
+        default:
+            cout << "Pilihan tidak tersedia.\n";
     }
     cout << "\nData berhasil diupdate!\n";
 }
 
-void hapusHero(){
-    lihatHero();
+int hapusHero(Hero heroArr[], int *jml){
+    if(*jml == 0){
+        cout << "Belum ada data hero.\n";
+        return 0;
+    }
+    lihatHero(heroArr, *jml);
     int id;
     cout << "\nMasukkan ID Hero : ";
     cin >> id;
+    clearBuffer();
     int index = id - 1;
-    for(int i = index; i < jumlahHero - 1; i++){
-        hero[i] = hero[i + 1];
-        hero[i].id = i + 1;
+    if(index < 0 || index >= *jml){
+        cout << "ID tidak ditemukan!\n";
+        return 0;
     }
-    jumlahHero--;
+    for(int i = index; i < *jml - 1; i++){
+        heroArr[i] = heroArr[i + 1];
+        heroArr[i].id = i + 1;
+    }
+    (*jml)--;
     cout << "\nData berhasil dihapus!\n";
+    return 1;
 }
 
 void lihatSpell(){
@@ -249,12 +260,15 @@ void lihatSpell(){
     cout << "|         DATA SPELL      |\n";
     cout << "===========================\n";
     for(int i = 0; i < jumlahSpell; i++){
-        cout << spell[i].id << ". "
-             << spell[i].nama << endl;
+        cout << spell[i].id << ". " << spell[i].nama << endl;
     }
 }
 
 void tambahSpell(){
+    if(jumlahSpell >= MAX){
+        cout << "Data spell penuh!\n";
+        return;
+    }
     spell[jumlahSpell].id = jumlahSpell + 1;
     cout << "Nama Spell : ";
     getline(cin, spell[jumlahSpell].nama);
@@ -267,12 +281,15 @@ void lihatEmblem(){
     cout << "|       DATA EMBLEM       |\n";
     cout << "===========================\n";
     for(int i = 0; i < jumlahEmblem; i++){
-        cout << emblem[i].id << ". "
-             << emblem[i].nama << endl;
+        cout << emblem[i].id << ". " << emblem[i].nama << endl;
     }
 }
 
 void tambahEmblem(){
+    if(jumlahEmblem >= MAX){
+        cout << "Data emblem penuh!\n";
+        return;
+    }
     emblem[jumlahEmblem].id = jumlahEmblem + 1;
     cout << "Nama Emblem : ";
     getline(cin, emblem[jumlahEmblem].nama);
@@ -285,12 +302,15 @@ void lihatMap(){
     cout << "|          DATA MAP       |\n";
     cout << "===========================\n";
     for(int i = 0; i < jumlahMap; i++){
-        cout << mapGame[i].id << ". "
-             << mapGame[i].nama << endl;
+        cout << mapGame[i].id << ". " << mapGame[i].nama << endl;
     }
 }
 
 void tambahMap(){
+    if(jumlahMap >= MAX){
+        cout << "Data map penuh!\n";
+        return;
+    }
     mapGame[jumlahMap].id = jumlahMap + 1;
     cout << "Nama Map : ";
     getline(cin, mapGame[jumlahMap].nama);
@@ -339,12 +359,12 @@ void menuSorting(){
         switch(pilih){
             case 1:
                 sortingNama();
-                lihatHero();
+                lihatHero(hero, jumlahHero);
                 pause();
                 break;
             case 2:
                 sortingLevel();
-                lihatHero();
+                lihatHero(hero, jumlahHero);
                 pause();
                 break;
             case 3:
@@ -358,7 +378,7 @@ void menuSorting(){
 
 int binarySearchNama(string target){
     sortingNama();
-    int low = 0;
+    int low  = 0;
     int high = jumlahHero - 1;
     while(low <= high){
         int mid = (low + high) / 2;
@@ -412,9 +432,7 @@ void menuSearching(){
                 getline(cin, cari);
                 int hasil = binarySearchNama(cari);
                 if(hasil != -1){
-                    cout << "\nHero ditemukan : "
-                         << hero[hasil].nama
-                         << endl;
+                    cout << "\nHero ditemukan : " << hero[hasil].nama << endl;
                 }
                 else{
                     cout << "\nHero tidak ditemukan\n";
@@ -441,23 +459,25 @@ void heroMeta(){
     cout << "=============================\n";
     for(int i = 0; i < jumlahHero; i++){
         if(hero[i].meta){
-            cout << hero[i].nama
-                 << " | "
-                 << hero[i].detail.patch
-                 << endl;
+            cout << hero[i].nama << " | " << hero[i].detail.patch << endl;
         }
     }
 }
 
 void compareHero(){
-    lihatHero();
-    int a,b;
+    lihatHero(hero, jumlahHero);
+    int a, b;
     cout << "\nPilih Hero 1 : ";
     cin >> a;
     cout << "Pilih Hero 2 : ";
     cin >> b;
+    clearBuffer();
     a--;
     b--;
+    if(a < 0 || a >= jumlahHero || b < 0 || b >= jumlahHero){
+        cout << "ID tidak valid!\n";
+        return;
+    }
     int powerA = hero[a].detail.level;
     int powerB = hero[b].detail.level;
     if(hero[a].detail.patch == "Buff") powerA += 5;
@@ -469,71 +489,45 @@ void compareHero(){
     cout << "|           HASIL           |\n";
     cout << "=============================\n";
     cout << "=== BERDASARKAN HERO POWER ===\n";
-    cout << hero[a].nama
-         << " Power : "
-         << powerA
-         << endl;
-    cout << hero[b].nama
-         << " Power : "
-         << powerB
-         << endl;
-    if(powerA > powerB){
-        cout << "Hero lebih kuat : "
-             << hero[a].nama
-             << endl;
-    }
-    else if(powerB > powerA){
-        cout << "Hero lebih kuat : "
-             << hero[b].nama
-             << endl;
-    }
-    else{
+    cout << hero[a].nama << " Power : " << powerA << endl;
+    cout << hero[b].nama << " Power : " << powerB << endl;
+    if(powerA > powerB)
+        cout << "Hero lebih kuat : " << hero[a].nama << endl;
+    else if(powerB > powerA)
+        cout << "Hero lebih kuat : " << hero[b].nama << endl;
+    else
         cout << "Kedua hero seimbang\n";
-    }
+
     cout << "\n=== BERDASARKAN TINGKAT KESULITAN ===\n";
-    cout << hero[a].nama
-         << ", Kesulitan : "
-         << hero[a].detail.kesulitan
-         << endl;
-    cout << hero[b].nama
-         << ", Kesulitan : "
-         << hero[b].detail.kesulitan
-         << endl;
-    if(hero[a].detail.kesulitan == "Hard" && hero[b].detail.kesulitan != "Hard"){
-        cout << "Hero lebih sulit : "
-            << hero[a].nama
-            << endl;
-    }
-    if(hero[b].detail.kesulitan == "Hard" && hero[a].detail.kesulitan != "Hard"){
-        cout << "Hero lebih sulit : "
-            << hero[b].nama
-            << endl;
-    }
-    if(hero[a].detail.kesulitan == "Medium" && hero[b].detail.kesulitan == "Easy"){
-        cout << "Hero lebih sulit : "
-             << hero[a].nama
-             << endl;
-    }
-    if(hero[b].detail.kesulitan == "Medium" && hero[a].detail.kesulitan == "Easy"){
-        cout << "Hero lebih sulit : "
-             << hero[b].nama
-             << endl;
-    }
-    if(hero[a].detail.kesulitan == hero[b].detail.kesulitan){
+    cout << hero[a].nama << ", Kesulitan : " << hero[a].detail.kesulitan << endl;
+    cout << hero[b].nama << ", Kesulitan : " << hero[b].detail.kesulitan << endl;
+    if(hero[a].detail.kesulitan == "Hard" && hero[b].detail.kesulitan != "Hard")
+        cout << "Hero lebih sulit : " << hero[a].nama << endl;
+    if(hero[b].detail.kesulitan == "Hard" && hero[a].detail.kesulitan != "Hard")
+        cout << "Hero lebih sulit : " << hero[b].nama << endl;
+    if(hero[a].detail.kesulitan == "Medium" && hero[b].detail.kesulitan == "Easy")
+        cout << "Hero lebih sulit : " << hero[a].nama << endl;
+    if(hero[b].detail.kesulitan == "Medium" && hero[a].detail.kesulitan == "Easy")
+        cout << "Hero lebih sulit : " << hero[b].nama << endl;
+    if(hero[a].detail.kesulitan == hero[b].detail.kesulitan)
         cout << "Kedua hero memiliki tingkat kesulitan yang sama\n";
-    }
 }
 
 void tambahFavorit(){
-    lihatHero();
+    lihatHero(hero, jumlahHero);
     int pilih;
     cout << "\nPilih Hero Favorit : ";
     cin >> pilih;
+    clearBuffer();
     pilih--;
-    favorit[jumlahFavorit].nama = hero[pilih].nama;
-    favorit[jumlahFavorit].role = hero[pilih].detail.role;
-    favorit[jumlahFavorit].level = hero[pilih].detail.level;
-    favorit[jumlahFavorit].match = rand() % 100;
+    if(pilih < 0 || pilih >= jumlahHero){
+        cout << "Pilihan tidak valid!\n";
+        return;
+    }
+    favorit[jumlahFavorit].nama    = hero[pilih].nama;
+    favorit[jumlahFavorit].role    = hero[pilih].detail.role;
+    favorit[jumlahFavorit].level   = hero[pilih].detail.level;
+    favorit[jumlahFavorit].match   = rand() % 100;
     favorit[jumlahFavorit].winrate = rand() % 100;
     jumlahFavorit++;
     cout << "\nFavorit berhasil ditambahkan!\n";
@@ -541,30 +535,25 @@ void tambahFavorit(){
 
 void updateRealtimeFavorit(){
     for(int i = 0; i < jumlahFavorit; i++){
-        favorit[i].match += rand() % 5;
+        favorit[i].match   += rand() % 5;
         favorit[i].winrate += (rand() % 11 - 5);
-        if(favorit[i].winrate < 0)
-            favorit[i].winrate = 0;
-        if(favorit[i].winrate > 100)
-            favorit[i].winrate = 100;
+        if(favorit[i].winrate < 0)   favorit[i].winrate = 0;
+        if(favorit[i].winrate > 100) favorit[i].winrate = 100;
     }
 }
 
-void datafavorit() {
+void datafavorit(){
     cout << "====================================\n";
-        cout << "|            HERO FAVORIT          |\n";
-        cout << "====================================\n";
-        for(int i = 0; i < jumlahFavorit; i++){
-            cout << i + 1 << ". "
-                 << favorit[i].nama
-                 << " | "
-                 << favorit[i].role
-                 << " | Match : "
-                 << favorit[i].match
-                 << " | WR : "
-                 << favorit[i].winrate
-                 << "%\n";
-        }
+    cout << "|            HERO FAVORIT          |\n";
+    cout << "====================================\n";
+    for(int i = 0; i < jumlahFavorit; i++){
+        cout << i + 1 << ". "
+             << favorit[i].nama
+             << " | " << favorit[i].role
+             << " | Match : " << favorit[i].match
+             << " | WR : "    << favorit[i].winrate
+             << "%\n";
+    }
 }
 
 void lihatFavorit(){
@@ -595,10 +584,19 @@ void lihatFavorit(){
 }
 
 void hapusFavorit(){
+    if(jumlahFavorit == 0){
+        cout << "Belum ada data favorit!\n";
+        return;
+    }
     int no;
     datafavorit();
     cout << "Pilih favorit yang dihapus : ";
     cin >> no;
+    clearBuffer();
+    if(no < 1 || no > jumlahFavorit){
+        cout << "Pilihan tidak valid!\n";
+        return;
+    }
     for(int i = no - 1; i < jumlahFavorit - 1; i++){
         favorit[i] = favorit[i + 1];
     }
@@ -606,41 +604,46 @@ void hapusFavorit(){
     cout << "\nHero favorit berhasil dihapus!\n";
 }
 
-void menuCreate(){
+void menuFav(){
     int pilih;
     do{
         system("cls");
-        cout << "==================================\n";
-        cout << "|            MENU CREATE         |\n";
-        cout << "==================================\n";
-        cout << "|1. Create Hero                  |\n";
-        cout << "|2. Create Spell                 |\n";
-        cout << "|3. Create Emblem                |\n";
-        cout << "|4. Create Map                   |\n";
-        cout << "|5. Kembali                      |\n";
-        cout << "==================================\n";
+        cout << "=============================================\n";
+        cout << "|              MENU FAVORIT                 |\n";
+        cout << "=============================================\n";
+        cout << "|1. Buat Hero Favorit                       |\n";
+        cout << "|2. Lihat Hero Favorit                      |\n";
+        cout << "|3. Hapus Hero Favorit                      |\n";
+        cout << "|4. Kembali                                 |\n";
+        cout << "=============================================\n";
         cout << "Pilih : ";
         cin >> pilih;
         clearBuffer();
         switch(pilih){
             case 1:
-                tambahHero();
+                system("cls");
+                tambahFavorit();
                 pause();
                 break;
             case 2:
-                tambahSpell();
-                pause();
+                system("cls");
+                lihatFavorit();
                 break;
             case 3:
-                tambahEmblem();
+                system("cls");
+                hapusFavorit();
                 pause();
                 break;
             case 4:
-                tambahMap();
+                system("cls");
+                pesan("Favorit", "Kembali ke Menu User");
                 pause();
                 break;
+            default:
+                cout << "Pilihan tidak valid!\n";
+                pause();
         }
-    }while(pilih != 5);
+    }while(pilih != 4);
 }
 
 void menuHero(){
@@ -660,7 +663,7 @@ void menuHero(){
         clearBuffer();
         switch(pilih){
             case 1:
-                lihatHero();
+                lihatHero(hero, jumlahHero);
                 pause();
                 break;
             case 2:
@@ -676,6 +679,56 @@ void menuHero(){
                 pause();
         }
     }while(pilih != 4);
+}
+
+void menuCreate(){
+    int pilih;
+    do{
+        system("cls");
+        cout << "=============================================\n";
+        cout << "|               MENU CREATE                 |\n";
+        cout << "=============================================\n";
+        cout << "|1. Tambah Hero                             |\n";
+        cout << "|2. Tambah Spell                            |\n";
+        cout << "|3. Tambah Emblem                           |\n";
+        cout << "|4. Tambah Map                              |\n";
+        cout << "|5. Kembali                                 |\n";
+        cout << "=============================================\n";
+        cout << "Pilih : ";
+        cin >> pilih;
+        clearBuffer();
+        switch(pilih){
+            case 1:
+                system("cls");
+                if(tambahHero(hero, &jumlahHero)){
+                    pesan("Create", "Hero berhasil ditambahkan");
+                }
+                pause();
+                break;
+            case 2:
+                system("cls");
+                tambahSpell();
+                pause();
+                break;
+            case 3:
+                system("cls");
+                tambahEmblem();
+                pause();
+                break;
+            case 4:
+                system("cls");
+                tambahMap();
+                pause();
+                break;
+            case 5:
+                pesan("Create");
+                pause();
+                break;
+            default:
+                cout << "Pilihan tidak valid!\n";
+                pause();
+        }
+    }while(pilih != 5);
 }
 
 void menuRead(){
@@ -697,7 +750,6 @@ void menuRead(){
         switch(pilih){
             case 1:
                 menuHero();
-                pause();
                 break;
             case 2:
                 lihatSpell();
@@ -711,50 +763,13 @@ void menuRead(){
                 lihatMap();
                 pause();
                 break;
-        }
-    }while(pilih != 5);
-}
-
-void menuFav() {
-    int pilih;
-    do {
-        system("cls");
-        cout << "=============================================\n";
-        cout << "|              MENU FAVORIT                 |\n";
-        cout << "=============================================\n";
-        cout << "|1. Buat Hero Favorit                       |\n";
-        cout << "|2. Lihat Hero Favorit                      |\n";
-        cout << "|3. Hapus Hero Favorit                      |\n";
-        cout << "|4. Kembali                                 |\n";
-        cout << "=============================================\n";
-        cout << "Pilih : ";
-        cin >> pilih;
-        clearBuffer();
-        switch(pilih){
-            case 1:
-                system("cls");
-                tambahFavorit();
-                pause();
-                break;
-            case 2:
-                system("cls"); 
-                lihatFavorit();
-                break;
-            case 3:
-                system("cls");
-                hapusFavorit();
-                pause();
-                break;
-            case 4:
-                system("cls");  
-                pesan("favorit", "Kembali ke Menu User");
-                pause();
+            case 5:
                 break;
             default:
                 cout << "Pilihan tidak valid!\n";
                 pause();
         }
-    } while(pilih != 4);
+    }while(pilih != 5);
 }
 
 void menuAdmin(){
@@ -781,17 +796,24 @@ void menuAdmin(){
                 menuRead();
                 break;
             case 3:
-                updateHero();
+                system("cls");
+                updateHero(hero, jumlahHero);
                 pause();
                 break;
             case 4:
-                hapusHero();
+                system("cls");
+                if(hapusHero(hero, &jumlahHero)){
+                    pesan("Admin", "Data berhasil dihapus");
+                }
                 pause();
                 break;
             case 5:
-                pesan("admin");
+                pesan("Admin");
                 pause();
                 break;
+            default:
+                cout << "Pilihan tidak tersedia!\n";
+                pause();
         }
     }while(pilih != 5);
 }
@@ -816,7 +838,7 @@ void menuUser(){
         switch(pilih){
             case 1:
                 system("cls");
-                lihatHero();
+                lihatHero(hero, jumlahHero);
                 pause();
                 break;
             case 2:
@@ -837,17 +859,18 @@ void menuUser(){
             case 5:
                 system("cls");
                 menuFav();
-                pause();
                 break;
             case 6:
                 system("cls");
-                pesan("user");
+                pesan("User");
                 pause();
                 break;
+            default:
+                cout << "Pilihan tidak valid!\n";
+                pause();
         }
     }while(pilih != 6);
 }
-
 
 struct User{
     string username;
@@ -855,6 +878,7 @@ struct User{
 };
 User userList[MAX];
 int jumlahUser = 0;
+
 void registrasiUser(){
     User baru;
     cout << "=== REGISTRASI USER ===\n";
@@ -862,7 +886,7 @@ void registrasiUser(){
     cin >> baru.username;
     cout << "Password : ";
     cin >> baru.password;
-
+    clearBuffer();
     for(int i = 0; i < jumlahUser; i++){
         if(userList[i].username == baru.username){
             cout << "Username sudah digunakan!\n";
@@ -882,7 +906,7 @@ bool loginUser(){
         cin >> username;
         cout << "Password : ";
         cin >> password;
-
+        clearBuffer();
         for(int i = 0; i < jumlahUser; i++){
             if(userList[i].username == username &&
                userList[i].password == password){
@@ -905,7 +929,7 @@ int main(){
     srand(time(0));
     Login admin = {"admin","01123"};
     int pilih;
-    do {
+    do{
         system("cls");
         cout << "====================================================\n";
         cout << "|  SISTEM MANAJEMEN HERO META PATCH UPDATE MOBILE  |\n";
@@ -943,7 +967,7 @@ int main(){
                 cout << "Pilihan gk ada.\n";
                 pause();
         }
-    } while(pilih != 4);
+    }while(pilih != 4);
 
     return 0;
 }
