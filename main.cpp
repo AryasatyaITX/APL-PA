@@ -6,7 +6,6 @@
 #include <chrono>
 #include <cstdlib>
 #include <ctime>
-#include <atomic>
 #include <cctype>
 #include <conio.h>
 using namespace std;
@@ -817,15 +816,18 @@ void lihatFavorit(){
                  << favorit[i].winrate
                  << "%\n";
         }
-        cout << "\nTEKAN SPACE UNTUK KEMBALI\n";
-        updateRealtimeFavorit();
-        this_thread::sleep_for(chrono::seconds(5));
-        if(_kbhit()){
-            int key = _getch();
-            if (key == 32){
-                break;
+        cout << "\nTekan SPACE untuk kembali...\n";
+        for(int i = 0; i < 30; i++){
+            if(_kbhit()){
+                int key = _getch();
+                if(key == 32){
+                    return;
+                }
             }
+            this_thread::sleep_for(chrono::milliseconds(300)
+            );
         }
+        updateRealtimeFavorit();
     }
 }
 
