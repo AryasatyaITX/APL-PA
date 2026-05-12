@@ -801,24 +801,11 @@ void lihatFavorit(){
         return;
     }
 
-    atomic<bool> keluar(false);
-
-    thread t([&](){
-        while(true){
-            int key = _getch();
-            if(key == 32){
-                keluar = true;
-                break;
-            }
-        }
-    });
-
-    while(!keluar){
+    while(true){
         system("cls");
         cout << "====================================\n";
         cout << "|            HERO FAVORIT          |\n";
         cout << "====================================\n";
-
         for(int i = 0; i < jumlahFavorit; i++){
             cout << i + 1 << ". "
                  << favorit[i].nama
@@ -830,19 +817,16 @@ void lihatFavorit(){
                  << favorit[i].winrate
                  << "%\n";
         }
-
         cout << "\nTEKAN SPACE UNTUK KEMBALI\n";
-
-        for(int i = 0; i < 100 && !keluar; i++){
-            this_thread::sleep_for(chrono::milliseconds(100));
-        }
-
-        if(!keluar){
-            updateRealtimeFavorit();
+        updateRealtimeFavorit();
+        this_thread::sleep_for(chrono::seconds(5));
+        if(_kbhit()){
+            int key = _getch();
+            if (key == 32){
+                break;
+            }
         }
     }
-
-    if(t.joinable()) t.join();
 }
 
 void hapusFavorit(){
