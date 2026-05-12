@@ -100,7 +100,6 @@ void pause(){
     system("pause");
 }
 
-// ====== Helper validasi (mirip pola kode contoh kamu) ======
 static bool isAllDigits(const string& s){
     if(s.empty()) return false;
     for(unsigned char c : s){
@@ -116,7 +115,6 @@ static bool isAllAlpha(const string& s){
     return true;
 }
 
-// input menu: getline + cek kosong + cek angka, kalau invalid return -1
 int inputMenu(){
     string input;
     getline(cin, input);
@@ -140,7 +138,7 @@ int inputMenu(){
     }
 }
 
-// versi throw (dipakai di fitur CRUD supaya bisa try-catch seperti contoh)
+
 int inputIntThrow(const string& field){
     string s;
     getline(cin, s);
@@ -168,7 +166,6 @@ string inputLineThrow(const string& field){
     return s;
 }
 
-// ====== Tampilan ======
 void headerHero(){
     cout << "\n========================================================================================================\n";
     cout << "|" << setw(3)  << "ID"
@@ -182,7 +179,6 @@ void headerHero(){
     cout << "========================================================================================================\n";
 }
 
-// ====== LOGIN ADMIN (error handling seperti contoh) ======
 bool loginAdmin(Login admin){
     string username, password;
     int kesempatan = 0;
@@ -543,25 +539,82 @@ int binarySearchNama(string target){
 }
 
 void cariRole(){
-    string role;
-    cout << "Masukkan role : ";
-    getline(cin, role);
+    int pilih;
+    do{
+        system("cls");
+        cout << "====================================\n";
+        cout << "|          PILIH ROLE             |\n";
+        cout << "====================================\n";
+        cout << "|1. Mage                          |\n";
+        cout << "|2. Assassin                      |\n";
+        cout << "|3. Tank                          |\n";
+        cout << "|4. Support                       |\n";
+        cout << "|5. Marksman                      |\n";
+        cout << "|6. Kembali                       |\n";
+        cout << "====================================\n";
+        cout << "Pilih : ";
+        pilih = inputMenu();
+        if(pilih == -1)
+            continue;
+        string roleCari;
+        switch(pilih){
+            case 1:
+                roleCari = "Mage";
+                break;
+            case 2:
+                roleCari = "Assassin";
+                break;
+            case 3:
+                roleCari = "Tank";
+                break;
+            case 4:
+                roleCari = "Support";
+                break;
+            case 5:
+                roleCari = "Marksman";
+                break;
+            case 6:
+                return;
 
-    if(role.empty()){
-        cout << "Role tidak boleh kosong!\n";
-        return;
-    }
-
-    bool ditemukan = false;
-    for(int i = 0; i < jumlahHero; i++){
-        if(hero[i].detail.role == role){
-            cout << hero[i].nama << endl;
-            ditemukan = true;
+            default:
+                cout << "\nPilihan tidak valid!\n";
+                pause();
+                continue;
         }
-    }
-    if(!ditemukan){
-        cout << "Role tidak ditemukan\n";
-    }
+
+        bool ditemukan = false;
+        system("cls");
+        cout << "==============================================================\n";
+        cout << "|                HASIL SEARCH ROLE                          |\n";
+        cout << "==============================================================\n";
+        cout << "|"
+             << setw(3)  << "ID"
+             << "|" << setw(20) << "Hero"
+             << "|" << setw(15) << "Role"
+             << "|" << setw(10) << "Level"
+             << "|" << setw(10) << "Patch"
+             << " |\n";
+        cout << "==============================================================\n";
+        for(int i = 0; i < jumlahHero; i++){
+            if(hero[i].detail.role == roleCari){
+                cout << "|"
+                     << setw(3)  << hero[i].id
+                     << "|" << setw(20) << hero[i].nama
+                     << "|" << setw(15) << hero[i].detail.role
+                     << "|" << setw(10) << hero[i].detail.level
+                     << "|" << setw(10) << hero[i].detail.patch
+                     << " |\n";
+                ditemukan = true;
+            }
+        }
+        cout << "==============================================================\n";
+        if(!ditemukan){
+            cout << "\nHero dengan role "
+                 << roleCari
+                 << " tidak ditemukan.\n";
+        }
+        pause();
+    }while(true);
 }
 
 void menuSearching(){
@@ -625,7 +678,6 @@ void heroMeta(){
     }
 }
 
-// dibuat throw supaya konsisten (menuUser tinggal try-catch)
 void compareHero(){
     if(jumlahHero < 2){
         throw runtime_error("Minimal harus ada 2 hero untuk compare.");
@@ -670,12 +722,11 @@ void compareHero(){
     cout << hero[a].nama << ", Kesulitan : " << hero[a].detail.kesulitan << endl;
     cout << hero[b].nama << ", Kesulitan : " << hero[b].detail.kesulitan << endl;
 
-    // mapping kesulitan biar konsisten
     auto nilai = [](const string& k){
         if(k == "Easy") return 1;
         if(k == "Medium") return 2;
         if(k == "Hard") return 3;
-        return 0; // tidak dikenali
+        return 0; 
     };
 
     int na = nilai(hero[a].detail.kesulitan);
@@ -1142,7 +1193,6 @@ void menuUser(){
     }while(pilih != 6);
 }
 
-// ====== USER REGISTER/LOGIN (error handling seperti contoh) ======
 struct User{
     string username;
     string password;
