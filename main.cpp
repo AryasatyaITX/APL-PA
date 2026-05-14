@@ -9,8 +9,22 @@
 #include <cctype>
 #include <conio.h>
 using namespace std;
-
 #define MAX 100
+
+// Warna
+string reset = "\033[0m";
+string bold = "\033[1m";
+string merah = "\033[31m";
+string hijau = "\033[32m";
+string kuning = "\033[33m";
+
+
+struct User{
+    string username;
+    string password;
+};
+User userList[MAX];
+int jumlahUser = 0;
 
 struct Login{
     string username;
@@ -96,7 +110,8 @@ void clearBuffer(){
 }
 
 void pause(){
-    system("pause");
+    cout << kuning << "Press any key to continue...\n" << reset;
+    getch();
 }
 
 static bool isAllDigits(const string& s){
@@ -538,25 +553,32 @@ int binarySearchNama(string target){
 }
 
 void cariRole(){
-    int pilih;
+     int pilihan = 1;
+    int totalPilihan = 6;
+    char tombol;
+    bool running = true;
+
     do{
         system("cls");
-        cout << "====================================\n";
-        cout << "|          PILIH ROLE             |\n";
-        cout << "====================================\n";
-        cout << "|1. Mage                          |\n";
-        cout << "|2. Assassin                      |\n";
-        cout << "|3. Tank                          |\n";
-        cout << "|4. Support                       |\n";
-        cout << "|5. Marksman                      |\n";
-        cout << "|6. Kembali                       |\n";
-        cout << "====================================\n";
-        cout << "Pilih : ";
-        pilih = inputMenu();
-        if(pilih == -1)
-            continue;
+        cout << hijau << bold << "+---------------------------------+\n"
+             << "|          PILIH ROLE             |\n"
+             << "+---------------------------------+\n"
+             << "|1. Mage" << (pilihan == 1 ? " <" : " ") << "                         |\n"
+             << "|2. Assassin" << (pilihan == 2 ? " <" : " ") << "                     |\n"
+             << "|3. Tank" << (pilihan == 3 ? " <" : " ") << "                         |\n"
+             << "|4. Support" << (pilihan == 4 ? " <" : " ") << "                      |\n"
+             << "|5. Marksman" << (pilihan == 5 ? " <" : " ") << "                    |\n"
+             << "|6. Kembali" << (pilihan == 6 ? " <" : " ") << "                      |\n"
+             << "+---------------------------------+\n";
+        cout << kuning << bold << "gunakan Panah Atas/Bawah, Enter untuk pilih." << reset << endl;
+        tombol = getch();
+        if(tombol == 72) {
+            if (pilihan > 1) pilihan--;
+        } else if(tombol == 80) {
+            if (pilihan < totalPilihan) pilihan++;
+        } else if(tombol == 13){
         string roleCari;
-        switch(pilih){
+        switch(pilihan){
             case 1:
                 roleCari = "Mage";
                 break;
@@ -573,28 +595,27 @@ void cariRole(){
                 roleCari = "Marksman";
                 break;
             case 6:
-                return;
-
-            default:
-                cout << "\nPilihan tidak valid!\n";
+                system("cls");
+                pesan("Menu Searching", "Kembali ke Menu Hero");
+                running = false;
                 pause();
-                continue;
+                return;
         }
 
         bool ditemukan = false;
         system("cls");
-        cout << "==============================================================\n";
-        cout << "|                HASIL SEARCH ROLE                          |\n";
-        cout << "==============================================================\n";
-        cout << "|"
+        cout << hijau << bold << "+----------------------------------------------------------------+\n"
+                              << "|                      HASIL SEARCH ROLE                         |\n"
+                              << "+----------------------------------------------------------------+\n"
+             << "|"
              << setw(3)  << "ID"
              << "|" << setw(20) << "Hero"
              << "|" << setw(15) << "Role"
              << "|" << setw(10) << "Level"
              << "|" << setw(10) << "Patch"
-             << " |\n";
-        cout << "==============================================================\n";
-        for(int i = 0; i < jumlahHero; i++){
+             << " |\n"
+                << "+----------------------------------------------------+\n";
+            for(int i = 0; i < jumlahHero; i++){
             if(hero[i].detail.role == roleCari){
                 cout << "|"
                      << setw(3)  << hero[i].id
@@ -606,75 +627,98 @@ void cariRole(){
                 ditemukan = true;
             }
         }
-        cout << "==============================================================\n";
+        cout << "+----------------------------------------------------+\n" << reset;
         if(!ditemukan){
-            cout << "\nHero dengan role "
-                 << roleCari
-                 << " tidak ditemukan.\n";
+            cout << "" << merah << bold << "+----------------------------------------------------+\n"
+                 << "| Hero dengan role " << roleCari << " tidak ditemukan. |\n"
+                 << "+----------------------------------------------------+\n" << reset;
         }
         pause();
-    }while(true);
+        }
+    }while(running == true);
+return;
 }
 
 void menuSearching(){
-    int pilih;
+    int pilihan = 1;
+    int totalPilihan = 3;
+    char tombol;
+    bool running = true;
+
     do{
         system("cls");
-        cout << "=============================================\n";
-        cout << "|               MENU SEARCHING              |\n";
-        cout << "=============================================\n";
-        cout << "|1. Search Hero Nama                        |\n";
-        cout << "|2. Search Hero Role                        |\n";
-        cout << "|3. Kembali                                 |\n";
-        cout << "=============================================\n";
-        cout << "Pilih : ";
-
-        pilih = inputMenu();
-        if(pilih == -1) continue;
-
-        switch(pilih){
-            case 1:{
-                string cari;
-                cout << "Masukkan nama hero : ";
-                getline(cin, cari);
-
-                if(cari.empty()){
-                    cout << "\nNama hero tidak boleh kosong!\n";
+        cout << hijau << bold << "+-------------------------------------------+\n"
+             << "|               MENU SEARCHING              |\n"
+             << "+-------------------------------------------+\n"
+             << "|1. Search Hero Nama" << (pilihan == 1 ? " <" : "  ") << "                      |\n"
+             << "|2. Search Hero Role" << (pilihan == 2 ? " <" : "  ") << "                      |\n"
+             << "|3. Kembali" << (pilihan == 3 ? " <" : "  ") << "                               |\n"
+             << "+-------------------------------------------+\n";
+        cout << kuning << "gunakan Panah Atas/Bawah, Enter untuk pilih." << reset << endl;
+        tombol = getch();
+        if(tombol == 72) {
+            if (pilihan > 1) pilihan--;
+        } else if(tombol == 80) {
+            if (pilihan < totalPilihan) pilihan++;
+        } else if (tombol == 13) {
+            switch(pilihan){
+                case 1:{
+                    system("cls");
+                    string cari;
+                     cout << hijau << bold << "+-------------------------------------------+\n"
+                          << "|               MENU SEARCHING              |\n"
+                          << "+-------------------------------------------+\n" 
+                          << "Masukkan nama hero : ";
+                    getline(cin, cari);
+    
+                    if(cari.empty()){
+                        cout << merah << bold << "+---------------------------------+\n"
+                             << "|  Nama hero tidak boleh kosong!  |\n"
+                             << "+---------------------------------+\n" << reset;
+                        pause();
+                        break;
+                    }
+    
+                    int hasil = binarySearchNama(cari);
+                    if(hasil != -1){
+                        cout << hijau << bold << "+--------------------------------+\n"
+                             << "Hero ditemukan : " << hero[hasil].nama << endl
+                             << "+--------------------------------+\n" << reset;
+                    } else{
+                        cout << merah << bold << "+---------------------------------+\n"
+                             << "|     Hero tidak ditemukan!       |\n"
+                             << "+---------------------------------+\n" << reset;
+                    }
                     pause();
                     break;
                 }
-
-                int hasil = binarySearchNama(cari);
-                if(hasil != -1){
-                    cout << "\nHero ditemukan : " << hero[hasil].nama << endl;
-                } else{
-                    cout << "\nHero tidak ditemukan\n";
-                }
-                pause();
-                break;
+                case 2:
+                    system("cls");
+                    cariRole();
+                    pause();
+                    break;
+                case 3:
+                    system("cls");
+                    pesan("Menu Searching", "Kembali ke Menu Hero");
+                    running = false;
+                    pause();
+                    break;
             }
-            case 2:
-                cariRole();
-                pause();
-                break;
-            case 3:
-                break;
-            default:
-                cout << "Pilihan tidak valid!\n";
-                pause();
         }
-    }while(pilih != 3);
+    }while(running == true);
+return;
 }
 
 void heroMeta(){
-    cout << "=============================\n";
-    cout << "|           HERO META       |\n";
-    cout << "=============================\n";
+    cout << hijau << bold << "+---------------------------+\n"
+         << "|         HERO META         |\n"
+         << "+---------------------------+\n";
     for(int i = 0; i < jumlahHero; i++){
         if(hero[i].meta){
             cout << hero[i].nama << " | " << hero[i].detail.patch << endl;
         }
     }
+    cout << "+---------------------------+\n" << reset;
 }
 
 void compareHero(){
@@ -706,20 +750,25 @@ void compareHero(){
     if(hero[b].detail.patch == "Nerf") powerB -= 5;
 
     system("cls");
-    cout << "=============================\n";
-    cout << "|           HASIL           |\n";
-    cout << "=============================\n";
-    cout << "=== BERDASARKAN HERO POWER ===\n";
-    cout << hero[a].nama << " Power : " << powerA << endl;
-    cout << hero[b].nama << " Power : " << powerB << endl;
+    cout << hijau << bold << "+---------------------------+\n"
+         << "|           HASIL           |\n"
+         << "+---------------------------+\n"
+         << "|  BERDASARKAN HERO POWER   |\n"
+         << "+---------------------------+\n"
+         << "|" << hero[a].nama << " Power : " << powerA << "          |\n"
+         << "|" << hero[b].nama << " Power : " << powerB << "          |\n"
+         << "+---------------------------+\n";
 
     if(powerA > powerB) cout << "Hero lebih kuat : " << hero[a].nama << endl;
     else if(powerB > powerA) cout << "Hero lebih kuat : " << hero[b].nama << endl;
     else cout << "Kedua hero seimbang\n";
 
-    cout << "\n=== BERDASARKAN TINGKAT KESULITAN ===\n";
-    cout << hero[a].nama << ", Kesulitan : " << hero[a].detail.kesulitan << endl;
-    cout << hero[b].nama << ", Kesulitan : " << hero[b].detail.kesulitan << endl;
+    cout << "+-----------------------------------+\n" 
+         << "|   BERDASARKAN TINGKAT KESULITAN   |\n"
+         << "+-----------------------------------+\n"
+         << "|" << hero[a].nama << " Kesulitan : " << hero[a].detail.kesulitan << "          |\n"
+         << "|" << hero[b].nama << " Kesulitan : " << hero[b].detail.kesulitan << "          |\n"
+         << "+-----------------------------------+\n";
 
     auto nilai = [](const string& k){
         if(k == "Easy") return 1;
@@ -734,40 +783,53 @@ void compareHero(){
     if(na > nb) cout << "Hero lebih sulit : " << hero[a].nama << endl;
     else if(nb > na) cout << "Hero lebih sulit : " << hero[b].nama << endl;
     else cout << "Kedua hero memiliki tingkat kesulitan yang sama\n";
+    cout << "+-----------------------------------+\n" << reset;
 }
 
 void tambahFavorit(){
     if(jumlahFavorit >= MAX){
-        cout << "\nData favorit penuh!\n";
+        cout << merah << bold << "+------------------------+\n"
+             << "|  Data favorit penuh!   |\n"
+             << "+------------------------+\n" << reset;
         return;
     }
 
     if(jumlahHero == 0){
-        cout << "\nBelum ada hero!\n";
+        cout << merah << bold << "+-------------------+\n"
+             << "|  Belum ada hero!  |\n"
+             << "+-------------------+\n" << reset;
         return;
     }
 
     lihatHero(hero, jumlahHero);
 
-    cout << "\nPilih Hero Favorit (1-" << jumlahHero << ") : ";
+    cout << hijau << bold << "Pilih Hero Favorit (1-" << jumlahHero << ") : \n" << reset;
 
     int key = _getch();
     cout << (char)key;
 
     if(key == 32){
-        cout << "\nDibatalkan.\n";
+        system("cls");
+        cout << kuning << bold << "+--------------+\n"
+             << "|  Dibatalkan  |\n"
+             << "+--------------+\n" << reset;
         return;
     }
 
     if(!isdigit(key)){
-        cout << "\n\nInput harus angka!\n";
+        system("cls");
+        cout << merah << bold << "+----------------------+\n"
+             << "|  Input harus angka!  |\n"
+             << "+----------------------+\n" << reset;
         return;
     }
 
     int pilih = key - '0';
 
-    if(pilih < 1 || pilih > jumlahHero){
-        cout << "\n\nPilihan tidak valid!\n";
+    if(pilih < 1 || pilih > jumlahFavorit){
+        cout << merah << bold << "+------------------------+\n"
+             << "|  Pilihan tidak valid!  |\n"
+             << "+------------------------+\n" << reset;
         return;
     }
 
@@ -778,7 +840,9 @@ void tambahFavorit(){
     favorit[jumlahFavorit].winrate = rand() % 100;
     jumlahFavorit++;
 
-    cout << "\n\nFavorit berhasil ditambahkan!\n";
+    cout << hijau << bold << "+---------------------------------+\n"
+         << "|  Favorit berhasil ditambahkan!  |\n"
+         << "+---------------------------------+\n" << reset;
 }
 
 void updateRealtimeFavorit(){
@@ -794,17 +858,19 @@ void updateRealtimeFavorit(){
 
 void lihatFavorit(){
     if(jumlahFavorit == 0){
-        cout << "\nBelum ada hero favorit!\n";
-        cout << "Tekan SPACE untuk kembali...\n";
+        cout << merah << bold << "+-----------------------------------------+\n"
+             << "|  Belum ada hero favorit untuk dihapus!  |\n"
+             << "+-----------------------------------------+\n";
+        cout << kuning << bold <<"Tekan SPACE untuk kembali...\n" << reset;
         while(_getch() != 32);
         return;
     }
 
     while(true){
         system("cls");
-        cout << "====================================\n";
-        cout << "|            HERO FAVORIT          |\n";
-        cout << "====================================\n";
+        cout << kuning << bold << "+----------------------------------+\n"
+             << "|            HERO FAVORIT          |\n"
+             << "+----------------------------------+\n";
         for(int i = 0; i < jumlahFavorit; i++){
             cout << i + 1 << ". "
                  << favorit[i].nama
@@ -816,7 +882,7 @@ void lihatFavorit(){
                  << favorit[i].winrate
                  << "%\n";
         }
-        cout << "\nTekan SPACE untuk kembali...\n";
+        cout << kuning << "Tekan SPACE untuk kembali...\n" << reset;
         for(int i = 0; i < 30; i++){
             if(_kbhit()){
                 int key = _getch();
@@ -833,41 +899,52 @@ void lihatFavorit(){
 
 void hapusFavorit(){
     if(jumlahFavorit == 0){
-        cout << "\nBelum ada hero favorit untuk dihapus!\n";
-        cout << "Tekan SPACE untuk kembali...\n";
+        cout << merah << bold << "+-----------------------------------------+\n"
+             << "|  Belum ada hero favorit untuk dihapus!  |\n"
+             << "+-----------------------------------------+\n";
+        cout << kuning << bold <<"Tekan SPACE untuk kembali...\n" << reset;
         while(_getch() != 32);
         return;
     }
 
     system("cls");
-
-    cout << "====================================\n";
-    cout << "|        HAPUS HERO FAVORIT       |\n";
-    cout << "====================================\n";
+    cout << hijau << bold <<"+----------------------------------+\n"
+         << "|        HAPUS HERO FAVORIT        |\n"
+         << "+----------------------------------+\n";
 
     for(int i = 0; i < jumlahFavorit; i++){
         cout << i + 1 << ". " << favorit[i].nama << endl;
     }
 
-    cout << "\nPilih nomor (SPACE = batal): ";
+    cout << "+----------------------------------+\n"
+         << "Pilih nomor (SPACE = batal): \n"
+         << "+----------------------------------+\n" << reset;
 
     int key = _getch();
     cout << (char)key;
 
     if(key == 32){
-        cout << "\n\nDibatalkan.\n";
+        system("cls");
+        cout << kuning << bold << "+--------------+\n"
+             << "|  Dibatalkan  |\n"
+             << "+--------------+\n" << reset;
         return;
     }
 
     if(!isdigit(key)){
-        cout << "\n\nInput harus angka!\n";
+        system("cls");
+        cout << merah << bold << "+----------------------+\n"
+             << "|  Input harus angka!  |\n"
+             << "+----------------------+\n" << reset;
         return;
     }
 
     int no = key - '0';
 
     if(no < 1 || no > jumlahFavorit){
-        cout << "\n\nPilihan tidak valid!\n";
+        cout << merah << bold << "+------------------------+\n"
+             << "|  Pilihan tidak valid!  |\n"
+             << "+------------------------+\n" << reset;
         return;
     }
 
@@ -877,222 +954,269 @@ void hapusFavorit(){
 
     jumlahFavorit--;
 
-    cout << "\n\nHero favorit berhasil dihapus!\n";
+    cout << kuning << bold << "+----------------------------------+\n"
+         << "|  Hero favorit berhasil dihapus!  |\n"
+         << "+----------------------------------+\n" << reset;
 }
 
 void menuFav(){
-    int pilih;
+    int pilihan = 1;
+    int totalPilihan = 4;
+    char tombol;
+    bool running = true;
+
     do{
         system("cls");
-        cout << "=============================================\n";
-        cout << "|              MENU FAVORIT                 |\n";
-        cout << "=============================================\n";
-        cout << "|1. Buat Hero Favorit                       |\n";
-        cout << "|2. Lihat Hero Favorit                      |\n";
-        cout << "|3. Hapus Hero Favorit                      |\n";
-        cout << "|4. Kembali                                 |\n";
-        cout << "=============================================\n";
-        cout << "Pilih : ";
-
-        pilih = inputMenu();
-        if(pilih == -1) continue;
-
-        switch(pilih){
-            case 1:
-                system("cls");
-                try{
-                    tambahFavorit();
-                }catch(exception &e){
-                    cout << "\nError: " << e.what() << endl;
-                }
-                pause();
-                break;
-            case 2:
-                system("cls");
-                lihatFavorit();
-                break;
-            case 3:
-                system("cls");
-                try{
-                    hapusFavorit();
-                }catch(exception &e){
-                    cout << "\nError: " << e.what() << endl;
-                }
-                pause();
-                break;
-            case 4:
-                system("cls");
-                pesan("Favorit", "Kembali ke Menu User");
-                pause();
-                break;
-            default:
-                cout << "Pilihan tidak valid!\n";
-                pause();
+        cout << hijau << bold << "+-------------------------------------------+\n"
+             << "|              MENU FAVORIT                 |\n"
+             << "+-------------------------------------------+\n"
+             << "|1. Buat Hero Favorit"  << (pilihan == 1 ? " <" : " ") << "                      |\n"
+             << "|2. Lihat Hero Favorit" << (pilihan == 2 ? " <" : " ") << "                     |\n"
+             << "|3. Hapus Hero Favorit" << (pilihan == 3 ? " <" : " ") << "                     |\n"
+             << "|4. Kembali" << (pilihan == 4 ? " <" : " ") << "                               |\n"
+             << "+-------------------------------------------+\n";
+        cout << kuning << bold << "Gunakan Panah Atas/Bawah, Enter untuk pilih." << reset << endl;
+        tombol = getch();
+        if(tombol == 72) {
+            if (pilihan > 1) pilihan--;
+        } else if(tombol == 80) {
+            if (pilihan < totalPilihan) pilihan++;
+        } else if (tombol == 13) {
+            switch(pilihan){
+                case 1:
+                    system("cls");
+                    try{
+                        tambahFavorit();
+                    }catch(exception &e){
+                        cout << "\nError: " << e.what() << endl;
+                    }
+                    pause();
+                    break;
+                case 2:
+                    system("cls");
+                    lihatFavorit();
+                    break;
+                case 3:
+                    system("cls");
+                    try{
+                        hapusFavorit();
+                    }catch(exception &e){
+                        cout << "\nError: " << e.what() << endl;
+                    }
+                    pause();
+                    break;
+                case 4:
+                    system("cls");
+                    pesan("Favorit", "Kembali ke Menu User");
+                    running = false;
+                    pause();
+                    break;
+            }
         }
-    }while(pilih != 4);
+    }while(running == true);
+return;
 }
 
 void menuHero(){
-    int pilih;
+    int pilihan = 1;
+    int totalPilihan = 4;
+    char tombol;
+    bool running = true;
+
     do{
         system("cls");
-        cout << "================================================\n";
-        cout << "|                 MENU HERO                    |\n";
-        cout << "================================================\n";
-        cout << "|1. Lihat Hero                                 |\n";
-        cout << "|2. Fitur Sorting                              |\n";
-        cout << "|3. Fitur Searching                            |\n";
-        cout << "|4. Kembali                                    |\n";
-        cout << "================================================\n";
-        cout << "Pilih : ";
-
-        pilih = inputMenu();
-        if(pilih == -1) continue;
-
-        switch(pilih){
-            case 1:
-                lihatHero(hero, jumlahHero);
-                pause();
-                break;
-            case 2:
-                menuSorting();
-                break;
-            case 3:
-                menuSearching();
-                break;
-            case 4:
-                break;
-            default:
-                cout << "Pilihan tidak valid!\n";
-                pause();
+        cout << hijau << bold <<"+----------------------------------------------+\n"
+             << "|                 MENU HERO                    |\n"
+             << "+----------------------------------------------+\n"
+             << "|1. Lihat Hero" << (pilihan == 1 ? " <" : " ") << "                                |\n"
+             << "|2. Fitur Sorting" << (pilihan == 2 ? " <" : " ") << "                             |\n"
+             << "|3. Fitur Searching" << (pilihan == 3 ? " <" : " ") << "                          |\n"
+             << "|4. Kembali" << (pilihan == 4 ? " <" : " ") << "                                   |\n"
+             << "+----------------------------------------------+\n";
+        cout << kuning << bold << "Gunakan Panah Atas/Bawah, Enter untuk pilih." << reset << endl;
+        tombol = getch();
+        if(tombol == 72) {
+            if (pilihan > 1) pilihan--;
+        } else if(tombol == 80) {
+            if (pilihan < totalPilihan) pilihan++;
+         } else if(tombol == 13) {
+             switch(pilihan){
+                case 1:
+                    system("cls");
+                    lihatHero(hero, jumlahHero);
+                    pause();
+                    break;
+                case 2:
+                    system("cls");
+                    menuSorting();
+                    break;
+                case 3:
+                    system("cls");
+                    menuSearching();
+                    break;
+                case 4:
+                    system("cls");
+                    pesan("Menu Hero", "Kembali ke Menu User");
+                    pause();
+                    running = false;
+                    break;
+             }
         }
-    }while(pilih != 4);
+    }while(running == true);
+return;
 }
 
 void menuCreate(){
-    int pilih;
+    int pilihan = 1;
+    int totalPilihan = 5;
+    char tombol;
+    bool running = true;
+
     do{
         system("cls");
-        cout << "=============================================\n";
-        cout << "|               MENU CREATE                 |\n";
-        cout << "=============================================\n";
-        cout << "|1. Tambah Hero                             |\n";
-        cout << "|2. Tambah Spell                            |\n";
-        cout << "|3. Tambah Emblem                           |\n";
-        cout << "|4. Tambah Map                              |\n";
-        cout << "|5. Kembali                                 |\n";
-        cout << "=============================================\n";
-        cout << "Pilih : ";
-
-        pilih = inputMenu();
-        if(pilih == -1) continue;
-
-        switch(pilih){
-            case 1:
-                system("cls");
-                try{
-                    tambahHero(hero, &jumlahHero);
-                    pesan("Create", "Hero berhasil ditambahkan");
-                }catch(exception &e){
-                    cout << "\nError: " << e.what() << endl;
+        cout << hijau << bold << "+-------------------------------------------+\n"
+             << "|               MENU CREATE                 |\n"
+             << "+-------------------------------------------+\n"
+             << "|1. Tambah Hero" << (pilihan == 1 ? " <" : "  ") << "                           |\n"
+             << "|2. Tambah Spell" << (pilihan == 2 ? " <" : "  ") << "                          |\n"
+             << "|3. Tambah Emblem" << (pilihan == 3 ? " <" : "  ") << "                         |\n"
+             << "|4. Tambah Map" << (pilihan == 4 ? " <" : "  ") << "                            |\n"
+             << "|5. Kembali" << (pilihan == 5 ? " <" : "  ") << "                               |\n"
+             << "+-------------------------------------------+\n";
+        cout << kuning << bold << "gunakan Panah Atas/Bawah, Enter untuk pilih." << reset << endl;
+        tombol = getch();
+        if(tombol == 72) {
+            if(pilihan > 1) pilihan--;
+        } else if(tombol == 80) {
+            if(pilihan < totalPilihan) pilihan++;
+        } else if(tombol == 13){
+            
+            switch(pilihan){
+                case 1:
+                    system("cls");
+                    try{
+                        tambahHero(hero, &jumlahHero);
+                        pesan("Create", "Hero berhasil ditambahkan");
+                    }catch(exception &e){
+                        cout << "\nError: " << e.what() << endl;
+                    }
+                    pause();
+                    break;
+                case 2:
+                    system("cls");
+                    tambahSpell();
+                    pause();
+                    break;
+                case 3:
+                    system("cls");
+                    tambahEmblem();
+                    pause();
+                    break;
+                case 4:
+                    system("cls");
+                    tambahMap();
+                    pause();
+                    break;
+                case 5:
+                    system("cls");
+                    pesan("Create");
+                    pause();
+                    running = false;
+                    break;
                 }
-                pause();
-                break;
-            case 2:
-                system("cls");
-                tambahSpell();
-                pause();
-                break;
-            case 3:
-                system("cls");
-                tambahEmblem();
-                pause();
-                break;
-            case 4:
-                system("cls");
-                tambahMap();
-                pause();
-                break;
-            case 5:
-                pesan("Create");
-                pause();
-                break;
-            default:
-                cout << "Pilihan tidak valid!\n";
-                pause();
         }
-    }while(pilih != 5);
+    }while(running == true);
+return;
 }
 
 void menuRead(){
-    int pilih;
+    int pilihan = 1;
+    int totalPilihan = 5;
+    char tombol;
+    bool running = true;
+
     do{
         system("cls");
-        cout << "================================\n";
-        cout << "|            MENU READ         |\n";
-        cout << "================================\n";
-        cout << "|1. Read Hero                  |\n";
-        cout << "|2. Read Spell                 |\n";
-        cout << "|3. Read Emblem                |\n";
-        cout << "|4. Read Map                   |\n";
-        cout << "|5. Kembali                    |\n";
-        cout << "================================\n";
-        cout << "Pilih : ";
-
-        pilih = inputMenu();
-        if(pilih == -1) continue;
-
-        switch(pilih){
-            case 1:
-                menuHero();
-                break;
-            case 2:
-                lihatSpell();
-                pause();
-                break;
-            case 3:
-                lihatEmblem();
-                pause();
-                break;
-            case 4:
-                lihatMap();
-                pause();
-                break;
-            case 5:
-                break;
-            default:
-                cout << "Pilihan tidak valid!\n";
-                pause();
+        cout << hijau << bold << "+------------------------------+\n"
+             << "|            MENU READ         |\n"
+             << "+------------------------------+\n"
+             << "|1. Read Hero" << (pilihan == 1 ? " <" : "  ") << "                |\n"
+             << "|2. Read Spell" << (pilihan == 2 ? " <" : "  ") << "               |\n"
+             << "|3. Read Emblem" << (pilihan == 3 ? " <" : "  ") << "              |\n"
+             << "|4. Read Map" << (pilihan == 4 ? " <" : "  ") << "                 |\n"
+             << "|5. Kembali" << (pilihan == 5 ? " <" : "  ") << "                  |\n"
+             << "+------------------------------+\n";
+        cout << kuning << bold << "Gunakan Panah Atas/Bawah, Enter untuk pilih." << reset << endl;
+        tombol = getch();
+        if(tombol == 72) {
+            if(pilihan > 1) pilihan--;
+        } else if(tombol == 80) {
+             if(pilihan < totalPilihan) pilihan++;
+        } else if(tombol == 13){
+            switch(pilihan){
+                case 1:
+                    system("cls");
+                    menuHero();
+                    break;
+                case 2:
+                    system("cls");
+                    lihatSpell();
+                    pause();
+                    break;
+                case 3:
+                    system("cls");
+                    lihatEmblem();
+                    pause();
+                    break;
+                case 4:
+                    system("cls");
+                    lihatMap();
+                    pause();
+                    break;
+                case 5:
+                    system("cls");
+                    pesan("Admin");
+                    running = false;
+                    pause();
+                    break;
+            }
         }
-    }while(pilih != 5);
+    }while(running == true);
+return;
 }
 
 void menuAdmin(){
-    int pilih;
+    int pilihan = 1;
+    int totalPilihan = 5;
+    char tombol;
+    bool running = true;
+
     do{
         system("cls");
-        cout << "=============================================\n";
-        cout << "|                   MENU ADMIN              |\n";
-        cout << "=============================================\n";
-        cout << "|1. Create Data                             |\n";
-        cout << "|2. Read Data                               |\n";
-        cout << "|3. Update Hero                             |\n";
-        cout << "|4. Delete Hero                             |\n";
-        cout << "|5. Keluar                                  |\n";
-        cout << "=============================================\n";
-        cout << "Pilih : ";
-
-        pilih = inputMenu();
-        if(pilih == -1) continue;
-
-        switch(pilih){
-            case 1:
-                menuCreate();
-                break;
-            case 2:
-                menuRead();
-                break;
-            case 3:
+        cout << hijau << bold << "+-------------------------------------------+\n"
+             << "|                   MENU ADMIN              |\n"
+             << "+-------------------------------------------+\n"
+             << "|1. Create Data" << (pilihan == 1 ? " <" : "  ") << "                            |\n"
+             << "|2. Read Data" << (pilihan == 2 ? " <" : "  ") << "                              |\n"
+             << "|3. Update Hero" << (pilihan == 3 ? " <" : "  ") << "                            |\n"
+             << "|4. Delete Hero" << (pilihan == 4 ? " <" : "  ") << "                            |\n"
+             << "|5. Keluar" << (pilihan == 5 ? " <" : "  ") << "                                 |\n"
+             << "+-------------------------------------------+\n";
+        cout << kuning << bold << "Gunakan Panah Atas/Bawah, Enter untuk pilih." << reset << endl;
+        tombol = _getch();
+        if(tombol == 72){
+            if(pilihan > 1) pilihan--;
+        } else if(tombol == 80){
+            if(pilihan < totalPilihan) pilihan++;
+        } else if(tombol == 13){
+            switch(pilihan){
+                case 1:
+                    menuCreate();
+                    break;
+                case 2:
+                    menuRead();
+                    break;
+                case 3:
                 system("cls");
                 try{
                     updateHero(hero, jumlahHero);
@@ -1109,82 +1233,82 @@ void menuAdmin(){
                 pause();
                 break;
             case 5:
+                system("cls");
                 pesan("Admin");
+                running = false;
                 pause();
                 break;
-            default:
-                cout << "Pilihan tidak tersedia!\n";
-                pause();
+            }
         }
-    }while(pilih != 5);
+    }while(running == true);
+return;
 }
 
 void menuUser(){
-    int pilih;
+    int pilihan = 1;
+    int totalPilihan = 6;
+    char tombol;
+    bool running = true;
+
     do{
         system("cls");
-        cout << "=============================================\n";
-        cout << "|                  MENU USER                |\n";
-        cout << "=============================================\n";
-        cout << "|1. Lihat Hero                              |\n";
-        cout << "|2. Hero Meta                               |\n";
-        cout << "|3. Cari Berdasarkan Role                   |\n";
-        cout << "|4. Compare Hero                            |\n";
-        cout << "|5. Hero Favorit                            |\n";
-        cout << "|6. Keluar                                  |\n";
-        cout << "=============================================\n";
-        cout << "Pilih : ";
-
-        pilih = inputMenu();
-        if(pilih == -1) continue;
-
-        switch(pilih){
-            case 1:
-                system("cls");
-                lihatHero(hero, jumlahHero);
-                pause();
-                break;
-            case 2:
-                system("cls");
-                heroMeta();
-                pause();
-                break;
-            case 3:
-                system("cls");
-                cariRole();
-                pause();
-                break;
-            case 4:
-                system("cls");
-                try{
-                    compareHero();
-                }catch(exception &e){
-                    cout << "\nError: " << e.what() << endl;
-                }
-                pause();
-                break;
-            case 5:
-                system("cls");
-                menuFav();
-                break;
-            case 6:
-                system("cls");
-                pesan("User");
-                pause();
-                break;
-            default:
-                cout << "Pilihan tidak valid!\n";
-                pause();
+        cout << hijau << bold << "+-------------------------------------------+\n"
+             << "|                  MENU USER                |\n"
+             << "+-------------------------------------------+\n"
+             << "|1. Lihat Hero" << (pilihan == 1 ? " <" : "  ") << "                            |\n"
+             << "|2. Hero Meta" << (pilihan == 2 ? " <" : "  ") << "                             |\n"
+             << "|3. Cari Berdasarkan Role" << (pilihan == 3 ? " <" : "  ") << "                 |\n"
+             << "|4. Compare Hero" << (pilihan == 4 ? " <" : "  ") << "                          |\n"
+             << "|5. Hero Favorit" << (pilihan == 5 ? " <" : "  ") << "                          |\n"
+             << "|6. Keluar" << (pilihan == 6 ? " <" : "  ") << "                                |\n"
+             << "+-------------------------------------------+\n";
+        cout << kuning << bold << "Gunakan Panah Atas/Bawah, Enter untuk pilih."<< reset << endl;
+        tombol = _getch();
+        if(tombol == 72){
+            if(pilihan > 1) pilihan--;
+        } else if(tombol == 80){
+            if(pilihan < totalPilihan) pilihan++;
+        } else if(tombol == 13){
+            switch(pilihan){
+                case 1:
+                    system("cls");
+                    lihatHero(hero, jumlahHero);
+                    pause();
+                    break;
+                case 2:
+                    system("cls");
+                    heroMeta();
+                    pause();
+                    break;
+                case 3:
+                    system("cls");
+                    cariRole();
+                    pause();
+                    break;
+                case 4:
+                    system("cls");
+                    try{
+                        compareHero();
+                    }catch(exception &e){
+                        cout << "\nError: " << e.what() << endl;
+                    }
+                    pause();
+                    break;
+                case 5:
+                    system("cls");
+                    menuFav();
+                    break;
+                case 6:
+                    system("cls");
+                    pesan("User");
+                    pause();
+                    running = false;
+                    break;
+            }
         }
-    }while(pilih != 6);
+    }while(running == true);
+return;
 }
-
-struct User{
-    string username;
-    string password;
-};
-User userList[MAX];
-int jumlahUser = 0;
 
 bool validUsername(const string& username){
     if(username.empty() || username.length() > 20) return false;
@@ -1197,115 +1321,114 @@ bool validPassword(const string& password){
 
 void registrasiUser(){
     User baru;
-    int percobaan = 0;
+    bool sudahAda = false;
 
-    while(percobaan < 3){
+    system("cls");
+    cout << hijau << bold << "+----------------------------------+\n";
+    cout <<          "|         REGISTRASI USER          |\n";
+    cout <<          "+----------------------------------+\n";
+
+    cout << "Username : "; getline(cin, baru.username);
+    if(!validUsername(baru.username)){
         system("cls");
-        cout << "====================================\n";
-        cout << "|         REGISTRASI USER          |\n";
-        cout << "====================================\n";
-
-        cout << "Username : ";
-        getline(cin, baru.username);
-
-        if(!validUsername(baru.username)){
-            cout << "\nUsername hanya boleh huruf & maksimal 20 karakter!\n";
-            percobaan++;
-            pause();
-            continue;
+        cout << merah << bold<< "+------------------------------------------------------+\n"
+             <<          "|  Username hanya boleh huruf & maksimal 20 karakter!  |\n"
+             <<          "+------------------------------------------------------+\n" << reset;  
+        pause();
+        return;
+    }
+    for(int i = 0; i < jumlahUser; i++){
+        if(userList[i].username == baru.username){
+            sudahAda = true;
+            break;
         }
-
-        bool sudahAda = false;
-        for(int i = 0; i < jumlahUser; i++){
-            if(userList[i].username == baru.username){
-                sudahAda = true;
-                break;
-            }
-        }
-        if(sudahAda){
-            cout << "\nUsername sudah digunakan!\n";
-            percobaan++;
-            pause();
-            continue;
-        }
-
-        cout << "Password : ";
-        getline(cin, baru.password);
-
-        if(!validPassword(baru.password)){
-            cout << "\nPassword hanya boleh angka & maksimal 10 digit!\n";
-            percobaan++;
-            pause();
-            continue;
-        }
-
-        if(jumlahUser >= MAX){
-            cout << "\nData user penuh!\n";
-            pause();
-            return;
-        }
-
-        userList[jumlahUser++] = baru;
-        cout << "\nRegistrasi berhasil!\n";
+    }
+    if(sudahAda){
+        system("cls");
+        cout << merah << bold << "+-------------------------------------------+\n"
+             <<          "|         Username sudah digunakan!         |\n"
+             <<          "+-------------------------------------------+\n" << reset;
         pause();
         return;
     }
 
-    cout << "\nRegistrasi gagal 3 kali!\n";
+    cout << "Password : "; getline(cin, baru.password);
+    cout << "+----------------------------------+\n" << reset;
+    if(!validPassword(baru.password)){
+        system("cls");
+        cout << merah << bold << "+-------------------------------------------------------+\n"
+             <<          "|    Password hanya boleh angka & maksimal 10 digit!    |\n"
+             <<          "+-------------------------------------------------------+\n" << reset;
+        pause();
+        return;
+    }
+    if(jumlahUser >= MAX){
+        system("cls");
+        cout << merah << bold << "+----------------------------------+\n"
+             <<          "|         Data user penuh!         |\n"
+             <<          "+----------------------------------+\n" << reset;
+        pause();
+        return;
+    }
+    userList[jumlahUser++] = baru;
+    system("cls");
+    cout << hijau << bold << "+----------------------------+\n"
+         <<          "|    Registrasi berhasil!    |\n"
+         <<          "+----------------------------+\n" << reset;
     pause();
+    return;
 }
 
 bool loginUser(){
     string username, password;
-    int kesempatan = 0;
 
-    while(kesempatan < 3){
+
+    system("cls");
+    cout << hijau << bold << "+----------------------------------+\n";
+    cout <<          "|            LOGIN USER            |\n";
+    cout <<          "+----------------------------------+\n";
+
+    cout << "Username : "; getline(cin, username);
+    if(username.empty()){
         system("cls");
-        cout << "====================================\n";
-        cout << "|            LOGIN USER            |\n";
-        cout << "====================================\n";
-
-        cout << "Username : ";
-        getline(cin, username);
-
-        if(username.empty()){
-            cout << "\nUsername tidak boleh kosong!\n";
-            kesempatan++;
-            pause();
-            continue;
-        }
-
-        cout << "Password : ";
-        getline(cin, password);
-
-        if(password.empty()){
-            cout << "\nPassword tidak boleh kosong!\n";
-            kesempatan++;
-            pause();
-            continue;
-        }
-
-        bool berhasil = false;
-        for(int i = 0; i < jumlahUser; i++){
-            if(userList[i].username == username && userList[i].password == password){
-                berhasil = true;
-                break;
-            }
-        }
-
-        if(berhasil){
-            cout << "\nLogin berhasil!\n";
-            pause();
-            return true;
-        }
-
-        kesempatan++;
-        cout << "\nUsername atau Password salah! (" << kesempatan << "/3)\n";
+        cout << merah << bold << "+----------------------------------+\n"
+                << "|   Username tidak boleh kosong!   |\n"
+                << "+----------------------------------+\n" << reset;
         pause();
     }
 
-    cout << "\nGagal login 3 kali!\n";
+    cout << "Password : "; getline(cin, password);
+    cout << "+----------------------------------+\n" << reset;  
+    if(password.empty()){
+        system("cls");
+        cout << merah << bold << "+----------------------------------+\n"
+                << "|   Password tidak boleh kosong!   |\n"
+                << "+----------------------------------+\n" << reset;
+        pause();
+    }
+
+    bool berhasil = false;
+    for(int i = 0; i < jumlahUser; i++){
+        if(userList[i].username == username && userList[i].password == password){
+            berhasil = true;
+            break;
+        }
+    }
+
+    if(berhasil){
+        system("cls");
+        cout << hijau << bold << "+---------------------------+\n"
+                              << "|       Login berhasil!     |\n"
+                              << "+---------------------------+\n" << reset;
+        pause();
+        return true;
+    }
+    system("cls");
+    cout << merah << bold << "+-------------------------------------+\n"
+                          << "|    Username atau Password salah!    |\n"
+                          << "+-------------------------------------+\n" << reset;
     pause();
+
     return false;
 }
 
@@ -1313,49 +1436,52 @@ int main(){
     srand((unsigned)time(0));
     Login admin = {"admin","01123"};
 
-    int pilih;
+    int pilihan = 1;
+    int totalPilihan = 4;
+    char tombol;
     bool running = true;
 
     do{
         system("cls");
-        cout << "====================================================\n";
-        cout << "|  SISTEM MANAJEMEN HERO META PATCH UPDATE MOBILE  |\n";
-        cout << "|            MOBILE LEGENDS : BANG BANG            |\n";
-        cout << "====================================================\n";
-        cout << "|1. Admin                                          |\n";
-        cout << "|2. Login User                                     |\n";
-        cout << "|3. Registrasi User                                |\n";
-        cout << "|4. Keluar                                         |\n";
-        cout << "====================================================\n";
-        cout << "Pilih : ";
-
-        pilih = inputMenu();
-        if(pilih == -1) continue;
-
-        switch(pilih){
-            case 1:
-                if(loginAdmin(admin)){
-                    menuAdmin();
+        cout << hijau << bold << "+--------------------------------------------------+\n"
+             << "|  SISTEM MANAJEMEN HERO META PATCH UPDATE MOBILE  |\n"
+             << "|            MOBILE LEGENDS : BANG BANG            |\n"
+             << "+--------------------------------------------------+\n"
+             << "|1. Admin" << (pilihan == 1 ? " <" : "  ") << "                                        |\n"
+             << "|2. Login User" << (pilihan == 2 ? " <" : "  ") << "                                   |\n"
+             << "|3. Registrasi User" << (pilihan == 3 ? " <" : "  ") << "                              |\n"
+             << "|4. Keluar" << (pilihan == 4 ? " <" : "  ") << "                                       |\n"
+             << "+--------------------------------------------------+\n";
+        cout << kuning << bold << "Gunakan Panah Atas/Bawah, Enter untuk pilih." << reset << endl;
+        tombol = _getch();
+        if (tombol == 72) {
+            if (pilihan > 1) pilihan--;
+        } else if (tombol == 80) {
+            if (pilihan < totalPilihan) pilihan++;
+        } else if (tombol == 13) {
+            switch(pilihan){
+                case 1:
+                    if(loginAdmin(admin)){
+                        menuAdmin();
+                    }
+                    break;
+                case 2:
+                    if(loginUser()){
+                        menuUser();
+                    }
+                    break;
+                case 3:
+                    registrasiUser();
+                    break;
+                case 4:
+                    system("cls");
+                    cout << kuning << bold << "+----------------------------------------------+\n"
+                         << "|  Terima kasih telah menggunakan sistem ini   |\n"
+                         << "+----------------------------------------------+" << reset << endl;
+                        running = false;
+                        break;
                 }
-                break;
-            case 2:
-                if(loginUser()){
-                    menuUser();
-                }
-                break;
-            case 3:
-                registrasiUser();
-                break;
-            case 4:
-                system("cls");
-                cout << "Terima kasih telah menggunakan sistem ini.\n";
-                running = false;
-                break;
-            default:
-                cout << "\nPilihan tidak valid!\n";
-                pause();
-        }
-    }while(running);
-
-    return 0;
+            }
+        }while(running == true);
+return 0;
 }
