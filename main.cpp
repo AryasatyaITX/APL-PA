@@ -62,6 +62,11 @@ struct Favorit{
     float winrate;
 };
 
+struct User{
+    string username;
+    string password;
+};
+
 Hero hero[MAX] = {
     {1,"Ling",true,{"Assassin","Hard",15,"Buff"}},
     {2,"Tigreal",false,{"Tank","Easy",10,"Normal"}},
@@ -97,12 +102,14 @@ string pesan(string nama, string status) {
 }
 
 Favorit favorit[MAX];
+User userList[MAX];
 
 int jumlahHero   = 4;
 int jumlahSpell  = 2;
 int jumlahEmblem = 2;
 int jumlahMap    = 2;
 int jumlahFavorit = 0;
+int jumlahUser = 0;
 
 void clearBuffer(){
     cin.clear();
@@ -595,9 +602,15 @@ void cariRole(){
                 roleCari = "Marksman";
                 break;
             case 6:
+<<<<<<< HEAD
                 system("cls");
                 pesan("Menu Searching", "Kembali ke Menu Hero");
                 running = false;
+=======
+                return;
+            default:
+                cout << "Pilihan tidak valid!\n";
+>>>>>>> 73d9522850d8d9f362c81b5e81fda1a5f7640e48
                 pause();
                 return;
         }
